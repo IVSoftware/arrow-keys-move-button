@@ -1,4 +1,6 @@
-﻿namespace arrow_keys_move_button
+﻿using System.Windows.Forms;
+
+namespace arrow_keys_move_button
 {
     partial class MainForm
     {
@@ -29,24 +31,34 @@
         private void InitializeComponent()
         {
             pictureBox1 = new PictureBox();
+            button = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
             // 
-            pictureBox1.BackColor = Color.Azure;
-            pictureBox1.BorderStyle = BorderStyle.FixedSingle;
-            pictureBox1.Location = new Point(191, 68);
+            pictureBox1.BackColor = Color.LightBlue;
+            pictureBox1.Location = new Point(100, 48);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(75, 75);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+            // 
+            // button
+            // 
+            button.Location = new Point(100, 171);
+            button.Name = "button";
+            button.Size = new Size(264, 37);
+            button.TabIndex = 2;
+            button.Text = "Button";
+            button.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(478, 244);
+            Controls.Add(button);
             Controls.Add(pictureBox1);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -58,5 +70,6 @@
         #endregion
 
         private PictureBox pictureBox1;
+        private Button button;
     }
 }
