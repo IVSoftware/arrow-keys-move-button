@@ -30,9 +30,11 @@ namespace arrow_keys_move_button
         /// </summary>
         private void InitializeComponent()
         {
-            pictureBox1 = new PictureBox();
-            button = new Button();
+            pictureBox1 = new PictureBoxEx();
+            pictureBox2 = new PictureBoxEx();
+            buttonDeselect = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
@@ -44,32 +46,44 @@ namespace arrow_keys_move_button
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // button
+            // pictureBox2
             // 
-            button.Location = new Point(100, 171);
-            button.Name = "button";
-            button.Size = new Size(264, 37);
-            button.TabIndex = 2;
-            button.Text = "Button";
-            button.UseVisualStyleBackColor = true;
+            pictureBox2.BackColor = Color.LightBlue;
+            pictureBox2.Location = new Point(290, 48);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(75, 75);
+            pictureBox2.TabIndex = 1;
+            pictureBox2.TabStop = false;
+            // 
+            // buttonDeselect
+            // 
+            buttonDeselect.Location = new Point(100, 171);
+            buttonDeselect.Name = "buttonDeselect";
+            buttonDeselect.Size = new Size(264, 37);
+            buttonDeselect.TabIndex = 2;
+            buttonDeselect.Text = "Deselect All";
+            buttonDeselect.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(478, 244);
-            Controls.Add(button);
+            Controls.Add(buttonDeselect);
             Controls.Add(pictureBox1);
+            Controls.Add(pictureBox2);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Main Form";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private PictureBox pictureBox1;
-        private Button button;
+        private PictureBoxEx pictureBox1;
+        private PictureBoxEx pictureBox2;
+        private Button buttonDeselect;
     }
 }

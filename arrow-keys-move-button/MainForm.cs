@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace arrow_keys_move_button
 {
@@ -20,9 +22,9 @@ namespace arrow_keys_move_button
             }
             return false;
         }
-
-        private void OnHotKeyPreview(Control? control, KeyEventArgs e)
+        protected override void OnKeyDown(KeyEventArgs e)
         {
+            base.OnKeyDown(e);
             switch (e.KeyData)
             {
                 case Keys.Left: onMoveLeft(); e.Handled = true; break;
