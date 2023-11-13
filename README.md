@@ -2,7 +2,7 @@
 
 Indeed, you are correct that as soon as there is a focused button on the form, it will monopolize Key messages and `Form1_KeyDown` will no longer be called or move the picture box as you have observed.
 
-Since the Key messages we need have been filtered out, the way around this is to implement our own message filter by implementing [IMessageFilter](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.application.addmessagefilter?view=windowsdesktop-7.0&devlangs=csharp&f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Forms.Application.AddMessageFilter)%3Bk(DevLang-csharp)%26rd%3Dtrue) so that we can choose to intercept **Win32** [WM_KEYDOWN](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown) message unconditionally. Try something like this:
+The way around this is to implement our own message filter by implementing [IMessageFilter](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.application.addmessagefilter?view=windowsdesktop-7.0&devlangs=csharp&f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Forms.Application.AddMessageFilter)%3Bk(DevLang-csharp)%26rd%3Dtrue) so that we can choose to intercept **Win32** [WM_KEYDOWN](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown) message unconditionally. Try something like this:
 ```
 public partial class MainForm : Form, IMessageFilter
 {
