@@ -43,28 +43,41 @@ public partial class MainForm : Form
 ___
 **Alternative**
 
-Since key events on their own behave in a way that doesn't meet the objective, it's much cleaner to inherit from `PictureBox` to make a control that can focus and knows how to move _itself_ by handling key events that it would receive once it has focus. 
+It's cleaner, however, to inherit from `PictureBox` to make a control that can focus and knows how to move _itself_ by handling key events that it would receive once it has focus. Key events are usually filtered out before they get to `PictureBox`, but by implementing `IMessageFilter` we can choose which **Win32** events to handle. 
 
 To use this control, go to the Designer.cs file and swap out instances of `PictureBox` for extended class `PictureBoxEx`. Here's the final, alternative solution with the `Form` class simplified as a result.
 
 ```
-public partial class MainForm : Form
+class PictureBoxEx : PictureBox, IMessageFilter
 {
-    public MainForm() => InitializeComponent();
-}
-
-class PictureBoxEx : PictureBox
-{
-    // PictureBox is not focusable by default so we do it ourselves.
+    public PictureBoxEx()
+    {
+        Application.AddMessageFilter(this);
+        Disposed += (sender, e) => Application.RemoveMessageFilter(this);
+    }
     protected override void OnMouseDown(MouseEventArgs e)
     {
         base.OnMouseDown(e);
-        Focus();
-        foreach (var pb in Parent.Controls.OfType<PictureBoxEx>())
+        if (ModifierKeys != Keys.Control)   // Allow multiple select.
         {
-            pb.BorderStyle = BorderStyle.None;
+            foreach (var pb in Parent.Controls.OfType<PictureBoxEx>())
+            {
+                pb.BorderStyle = BorderStyle.None;
+            }
         }
-        BorderStyle = BorderStyle.FixedSingle;   
+        BorderStyle = BorderStyle.FixedSingle;
+    }
+    private const int WM_KEYDOWN = 0x0100;
+    public bool PreFilterMessage(ref Message m)
+    {
+        if ((m.Msg == WM_KEYDOWN) && (BorderStyle == BorderStyle.FixedSingle))
+        {
+
+            var e = new KeyEventArgs(((Keys)m.WParam) | Control.ModifierKeys);
+            OnKeyDown(e);
+            return (e.Handled);
+        }
+        return false;
     }
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -86,5 +99,6 @@ class PictureBoxEx : PictureBox
         }
     }
 }
+```
 
 
