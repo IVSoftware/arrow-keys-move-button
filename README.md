@@ -48,7 +48,9 @@ public partial class MainForm : Form, IMessageFilter
 ___
 **Alternative**
 
-A cleaner approach, however, would be to inherit from `PictureBox` and implement the `IMessageFilter` _there_, to make an extended `PictureBoxEx` control that knows how to move _itself_ by handling the intercepted key events. 
+The cleaner approach, however, would be to inherit from `PictureBox` and implement the `IMessageFilter` _there_, to make an extended `PictureBoxEx` control that knows how to move _itself_ by handling the intercepted key events. 
+
+[![move either picture boxe][1]][1]
 
 To use this control, go to the Designer.cs file and swap out instances of `PictureBox` for extended class `PictureBoxEx`. Here's the final, alternative solution with the `Form` class simplified as a result. The scheme here is to set the border of the picture box(es) to move.
 
@@ -124,5 +126,8 @@ class PictureBoxEx : PictureBox, IMessageFilter
     }
 }
 ```
+
+
+  [1]: https://i.stack.imgur.com/js8nL.png
 
 
