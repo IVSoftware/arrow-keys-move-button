@@ -42,3 +42,45 @@ public partial class MainForm : Form
     private const int WM_HOTKEY = 0x0312;
 }
 ```
+
+___
+
+Now, you're probably thinking, "If all that's is true, why not just click-to-focus the `PictureBox` that I want to move, and handle key events that it's already receiving now that is has focus?" 
+
+Yes, and to make it easier still, let's just inherit from `PictureBox` to make a control that knows how to move _itself_ and then go to the Designer.cs file and swap out instances of `PictureBox` for our extended class `PictureBoxEx`. This makes the `Form` class very simple as well.
+
+```
+public partial class MainForm : Form
+{
+    public MainForm() => InitializeComponent();
+}
+
+class PictureBoxEx : PictureBox
+{
+    protected override void OnMouseDown(MouseEventArgs e)
+    {
+        base.OnMouseDown(e);
+        Focus();    // PictureBox is not focusable by default.
+    }
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        switch (e.KeyData)
+        {
+            case Keys.Left:
+                Location = new Point(Location.X - 15, Location.Y);
+                break;
+            case Keys.Up:
+                Location = new Point(Location.X, Location.Y - 15);
+                break;
+            case Keys.Right:
+                Location = new Point(Location.X + 15, Location.Y);
+                break;
+            case Keys.Down:
+                Location = new Point(Location.X, Location.Y + 15);
+                break;
+        }
+    }
+}
+```
+
