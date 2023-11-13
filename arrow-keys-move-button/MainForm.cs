@@ -6,19 +6,48 @@ namespace arrow_keys_move_button
 {
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();
+        public MainForm()
+        {
+            InitializeComponent();
+            buttonDeselect.Click += (sender, e) =>
+            {
+                foreach (var pb in Controls.OfType<PictureBoxEx>())
+                {
+                    pb.BorderStyle = BorderStyle.None;
+                }
+            };
+        }
     }
-    class PictureBoxEx : PictureBox
+    class PictureBoxEx : PictureBox, IMessageFilter
     {
+        public PictureBoxEx()
+        {
+            Application.AddMessageFilter(this);
+            Disposed += (sender, e) => Application.RemoveMessageFilter(this);
+        }
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            Focus();
-            foreach (var pb in Parent.Controls.OfType<PictureBoxEx>())
+            if (ModifierKeys != Keys.Control)   // Allow multiple select.
             {
-                pb.BorderStyle = BorderStyle.None;
+                foreach (var pb in Parent.Controls.OfType<PictureBoxEx>())
+                {
+                    pb.BorderStyle = BorderStyle.None;
+                }
             }
             BorderStyle = BorderStyle.FixedSingle;
+        }
+        private const int WM_KEYDOWN = 0x0100;
+        public bool PreFilterMessage(ref Message m)
+        {
+            if ((m.Msg == WM_KEYDOWN) && (BorderStyle == BorderStyle.FixedSingle))
+            {
+
+                var e = new KeyEventArgs(((Keys)m.WParam) | Control.ModifierKeys);
+                OnKeyDown(e);
+                return (e.Handled);
+            }
+            return false;
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {

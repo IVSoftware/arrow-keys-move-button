@@ -1,8 +1,8 @@
 # Arrow Keys Move Button
 
-Key messages go to the control that has focus and chances are that is 'not' the main `Form`. Subscribing to `Form1_KeyDown` is unlikely to be called and doubtful to move the picture box as you have observed. 
+Key messages go to the control that has focus and chances are that is 'not' the main `Form`. Subscribing to `Form1_KeyDown` is unlikely to be called and doubtful to move the picture box. As you have observed **when buttons are introduced in the form** what changes is that one of those buttons will get the focus, and whichever one happens to have the focus will get the key events.
 
-What will help here is intercepting the _unfiltered_ **Win32** [WM_KEYDOWN](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown) message with `override WndProc()` to do it. Try something like this:
+Try intercepting the **Win32** [WM_KEYDOWN](https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-keydown) message with `override WndProc()` before it gets dispatched to the focused control as shown here. This should move the picture box as you intend.
 
 ```
 public partial class MainForm : Form
@@ -11,7 +11,6 @@ public partial class MainForm : Form
     protected override void WndProc(ref Message m)
     {
         base.WndProc(ref m);
-
         if (m.Msg == WM_KEYDOWN)
         {
             var e = new KeyEventArgs(((Keys)m.WParam) | Control.ModifierKeys);
@@ -34,20 +33,19 @@ public partial class MainForm : Form
     private void onMoveUp() => 
         pictureBox1.Location = new Point(pictureBox1.Location.X, pictureBox1.Location.Y - 15);
     private void onMoveRight() =>
-        pictureBox1.Location = new Point(pictureBox1.Location.X + 15,
-            pictureBox1.Location.Y);
+        pictureBox1.Location = new Point(pictureBox1.Location.X + 15,  pictureBox1.Location.Y);
     private void onMoveDown() =>
         pictureBox1.Location = new Point(pictureBox1.Location.X, pictureBox1.Location.Y + 15);
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_HOTKEY = 0x0312;
 }
 ```
-
 ___
+**Alternative**
 
-Now, you're probably thinking, "If all that's is true, why not just click-to-focus the `PictureBox` that I want to move, and handle key events that it's already receiving now that is has focus?" 
+Since key events on their own behave in a way that doesn't meet the objective, it's much cleaner to inherit from `PictureBox` to make a control that can focus and knows how to move _itself_ by handling key events that it would receive once it has focus. 
 
-Yes, and to make it easier still, let's just inherit from `PictureBox` to make a control that knows how to move _itself_ and then go to the Designer.cs file and swap out instances of `PictureBox` for our extended class `PictureBoxEx`. This makes the `Form` class very simple as well.
+To use this control, go to the Designer.cs file and swap out instances of `PictureBox` for extended class `PictureBoxEx`. Here's the final, alternative solution with the `Form` class simplified as a result.
 
 ```
 public partial class MainForm : Form
@@ -57,10 +55,16 @@ public partial class MainForm : Form
 
 class PictureBoxEx : PictureBox
 {
+    // PictureBox is not focusable by default so we do it ourselves.
     protected override void OnMouseDown(MouseEventArgs e)
     {
         base.OnMouseDown(e);
-        Focus();    // PictureBox is not focusable by default.
+        Focus();
+        foreach (var pb in Parent.Controls.OfType<PictureBoxEx>())
+        {
+            pb.BorderStyle = BorderStyle.None;
+        }
+        BorderStyle = BorderStyle.FixedSingle;   
     }
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -82,5 +86,5 @@ class PictureBoxEx : PictureBox
         }
     }
 }
-```
+
 
